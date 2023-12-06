@@ -7,17 +7,19 @@ import Tambah from './pages/Tambah';
 
 const App = () => {
   return (
+    <>
     <div>
-      <BrowserRouter>
-        <Navigation />
+      <Navigation />
+      <BrowserRouter> 
         <Routes>
-          <Route path="" exact={"true"} children={() => <Home />} />
+          <Route path="/" exact={"true"} children={() => <Home />} />
           <Route path="/detail" children={() => <Detail />} />
           <Route path="/edit" children={() => <Edit />} />
           <Route path="/tambah" children={() => <Tambah />} />
         </Routes>
       </BrowserRouter>
     </div>
+    </>
   )
 }
 
