@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import './index.scss';
 import { useEffect, useState } from "react";
-import { axiosGet } from "../../axiosServices";
+import { axiosDelete, axiosGet } from "../../axiosServices";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
 
   useEffect(() => {
     getAllProducts();
@@ -17,19 +18,40 @@ const Home = () => {
     } catch (err) {console.log(err)};
   };
 
+  const handleSearch = async (e) => {
+    try {
+      setSearchInput(e.target.value);
+      const res = await axiosGet(`/product/${e.target.value}`)
+      setProducts(res.data);
+    } catch (err) {console.log(err)};
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await axiosDelete(`/product/${id}`);
+      console.log(res);
+    } catch (err) {console.log(err)};
+  }
+
+
   return(
     <div className="main">
       <Link to="/tambah" className="btn btn-primary">Tambah Produk</Link>
       <div className="search">
-        <input type="text" placeholder="Masukkan kata kunci..."/>
+        <input 
+        type="text"
+        placeholder="Masukkan kata kunci..."
+        value={searchInput}
+        onChange={handleSearch}
+        />
       </div>
       <table className="table">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th className="text-right">Price</th>
-            <th className="text-center">Stock</th>
+            <th>Nama</th>
+            <th className="text-right">Harga</th>
+            <th className="text-center">Stok</th>
           </tr>
         </thead>
         <tbody>
@@ -42,7 +64,7 @@ const Home = () => {
               <td className="text-center">
                 <Link to="/detail" className="btn btn-sm btn-info">Detail</Link>
                 <Link to="/edit" className="btn btn-sm btn-warning">Edit</Link>
-                <Link to="#" className="btn btn-sm btn-danger">Delete</Link>
+                <button className="btn btn-sm btn-danger" onClick={() => handleDelete(product.id)}>Delete</button>
               </td>
             </tr>
           ))}
