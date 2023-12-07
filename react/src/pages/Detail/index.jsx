@@ -1,23 +1,25 @@
-import { Link } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
 import './index.scss';
 import { axiosGet } from "../../axiosServices";
 
-const Detail = ({ productId }) => {
-  const [prodById, setProdById] = useState([])
-  
-  const getProductById = async () => {
+const Detail = () => {
+  const { productId } = useParams();
+  const [prodById, setProdById] = useState({});
+
+  const getProductById = useCallback(async () => {
+    console.log(productId)
     try {
-      const res = await axiosGet(`/product/${product.id}`)
-      setProdById(res.data)
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
+      const res = await axiosGet(`/product/${productId}`);
+      console.log(res, "raw data")
+      console.log(res.data, "data");
+      setProdById(res.data);
+    } catch (err) {console.log(err)};
+  }, [productId]);
+
   useEffect(() => {
-    getProductById()
-  }, [productId])
+    getProductById();
+  }, [getProductById]);
 
   return (
     <div className="main">
@@ -25,16 +27,18 @@ const Detail = ({ productId }) => {
 
       <table className="table">
         <tbody>
+          {prodById.map((prodById) => (
+          <tr key={prodById.id}>
           <tr>
             <td>ID</td>
             <td>: {prodById.id}</td>
           </tr>
           <tr>
-            <td>Name</td>
+            <td>Nama</td>
             <td>: {prodById.name}</td>
           </tr>
           <tr>
-            <td>Price</td>
+            <td>Harga</td>
             <td>: {prodById.price}</td>
           </tr>
           <tr>
@@ -45,7 +49,9 @@ const Detail = ({ productId }) => {
             <td>Status</td>
             <td>: {prodById.status}</td>
           </tr>
-        </tbody>
+          </tr>
+          ))}
+        </tbody>  
       </table>
     </div>
   )

@@ -3,39 +3,30 @@ import Input from "../../components/Input";
 import { axiosPut } from "../../axiosServices";
 
 
-const Edit = () => {
+const Edit = ({ prodById, setEditModal }) => {
   const [formValues, setFormValues] = useState({
-    id: 0,
-    name: "",
-    price: 0,
-    stock: 0,
-    status: false,
+      id: '',
+      name: '',
+      price: '',
+      stock: '',
+      status: false,
   });
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    const getInitialValues = async () => {
-      try {
-        const initialValues = await productInitialValue();
-
-        setFormValues(initialValues);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getInitialValues();
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const res = await axiosPut(`/product/$prodById.id`, formValues);
-      console.log(res);
-    } catch (error) {
-      console.error(error);
+    if (prodById) {
+      const { id, name, price, stock, status } = prodById;
+      setFormValues({
+        id,
+        name,
+        price,
+        stock,
+        status,
+      });
     }
-  };
-
+  }, [prodById]);
+  
   const handleInputChange = (name, value) => {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -43,12 +34,26 @@ const Edit = () => {
     }));
   };
 
+  const handleEdit = async () => {
+        setLoading(true)
+        try {
+            const res = await axiosPut(`/product/${prodById.id}`, formValues);
+            setLoading(false)
+            setEditModal(false)
+            console.log(res)
+            alert("Produk Berhasil Diubah!")
+        }
+        catch (err) {
+            console.log(err)
+        }
+    };
+
   return (
     <div className="main">
       <div className="card">
         <h2>Edit Produk</h2>
         <br />
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleEdit}>
         <Input 
             name="id" 
             type="number"
@@ -89,7 +94,9 @@ const Edit = () => {
             value={formValues.status}
             onChange={(e) => handleInputChange("status", e.target.checked)}  
           />
-          <button type="submit" className="btn btn-primary">Simpan</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Saving..." : "Save"}
+          </button>
         </form>
       </div>
     </div>

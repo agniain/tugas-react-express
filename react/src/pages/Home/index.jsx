@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './index.scss';
 import { useEffect, useState } from "react";
 import { axiosDelete, axiosGet } from "../../axiosServices";
@@ -6,6 +6,7 @@ import { axiosDelete, axiosGet } from "../../axiosServices";
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [searchInput, setSearchInput] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllProducts();
@@ -26,10 +27,16 @@ const Home = () => {
     } catch (err) {console.log(err)};
   }
 
+  const handleDetail = (id) => {
+    navigate(`/detail/${id}`);
+  };
+
   const handleDelete = async (id) => {
     try {
       const res = await axiosDelete(`/product/${id}`);
       console.log(res);
+      alert("Produk Berhasil Dihapus!");
+      
     } catch (err) {console.log(err)};
   }
 
@@ -62,7 +69,7 @@ const Home = () => {
               <td className="text-right">{`Rp ${product.price}`}</td>
               <td className="text-right">{product.stock}</td>
               <td className="text-center">
-                <Link to="/detail" className="btn btn-sm btn-info">Detail</Link>
+                <button className="btn btn-sm btn-info" onClick={() => handleDetail(product.id)}>Detail</button>
                 <Link to="/edit" className="btn btn-sm btn-warning">Edit</Link>
                 <button className="btn btn-sm btn-danger" onClick={() => handleDelete(product.id)}>Delete</button>
               </td>

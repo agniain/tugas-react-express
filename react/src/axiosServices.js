@@ -1,9 +1,12 @@
 import axios from 'axios';
 
-const baseURL = `http://localhost:3001`
+const baseURL = `http://localhost:3001/api/v5`
 
 export const axiosGet = (url) =>{
-    return axios.get(`${baseURL}${url}`, {
+    const resource = baseURL + url;
+    console.log (resource);
+    
+    return axios.get(resource, {
         headers:{
             "Content-Type": "application/json"
         }

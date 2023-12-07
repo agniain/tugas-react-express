@@ -17,17 +17,25 @@ const Tambah = () => {
 
     try {
       await createProduct(formValues);
+      setFormValues({
+        id: 0,
+        name: "",
+        price: 0,
+        stock: 0,
+        status: false,
+      });
+      
     } catch (error) {
       console.error(error);
     }
   };
 
   const createProduct = async (values) => {
-    setLoading(true);
     try {
       const res = await axiosPost('/product', values);
       console.log(res);
-      setLoading(false);
+      alert("Produk Berhasil Ditambah!");
+
     } catch (error) {
       console.error(error);
     }
